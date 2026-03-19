@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>Eid Mubarak</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial;
+        background-color: #0b1d3a;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    #fireButton {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 30px 60px;
+        font-size: 36px;
+        background-color: gold;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        z-index: 10;
+    }
+
+    #msg {
+        position: absolute;
+        top: 55%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 50px;
+        color: white;
+        display: none;
+        z-index: 10;
+    }
+
+    #nameMsg {
+        position: absolute;
+        top: 65%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 30px;
+        color: #ffd700; /* لون ذهبي */
+        display: none;
+        z-index: 10;
+    }
+
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+</style>
+</head>
+<body>
+
+<button id="fireButton">اضغط هنا 🎁</button>
+
+<h1 id="msg">🎉 كل سنة وانت طيب 🎉</h1>
+<p id="nameMsg">مع تحياتي، Marwan Hamdi ❤️</p>
+
+<canvas id="fireworks"></canvas>
+
+<!-- موسيقى -->
+<audio id="eidSong" src="EID.MP3"></audio> <!-- حط الأغنية جنب الصفحة -->
+
+<script>
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+let started = false;
+
+const audio = document.getElementById("eidSong");
+
+document.getElementById("fireButton").addEventListener("click", () => {
+    document.getElementById("msg").style.display = "block";
+    document.getElementById("nameMsg").style.display = "block"; // إظهار الاسم
+    started = true;
+    audio.play(); // تشغيل الموسيقى
+});
+
+// إنشاء الألعاب النارية
+function createFirework() {
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height / 2;
+
+    for (let i = 0; i < 50; i++) {
+        particles.push({
+            x: x,
+            y: y,
+            vx: (Math.random() - 0.5) * 6,
+            vy: (Math.random() - 0.5) * 6,
+            life: 100,
+            color: `hsl(${Math.random()*360}, 100%, 50%)`
+        });
+    }
+}
+
+function draw() {
+    ctx.fillStyle = "rgba(11,29,58,0.3)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (started && Math.random() < 0.05) createFirework();
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 4, 4);
+
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+
+        if (p.life <= 0) particles.splice(i, 1);
+    }
+
+    requestAnimationFrame(draw);
+}
+
+draw();
+</script>
+
+</body>
+</html>
